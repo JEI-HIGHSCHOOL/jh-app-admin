@@ -11,9 +11,9 @@ export default function NotFoundPage() {
           size={44}
           className="animate-ping text-red-500 drop-shadow-lg"
         />
-        <h1 className="my-8 text-black">Page Not Found</h1>
+        <h1 className="my-8 text-black">찾을 수 없는 페이지</h1>
         <ArrowLink href="/" className="text-black" direction="left">
-          Back to home
+          메인 페이지로
         </ArrowLink>
       </section>
     </main>

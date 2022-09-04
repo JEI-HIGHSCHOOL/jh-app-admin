@@ -2,14 +2,15 @@ import React from "react";
 
 const FooterComponent = () => {
   return (
-    <footer className="bottom-0 py-16 text-center">
+    <footer className="py-16 text-center mt-auto">
+      {new Date().getFullYear()} | Dohyun |{" "}
       <a
-        href="https://yehezgun.com"
+        className="font-semibold hover:underline"
         target="_blank"
-        className="cursor-newtab font-semibold hover:underline"
+        href="https://github.com/JEI-HIGHSCHOOL/meal-react-native"
         rel="noreferrer"
       >
-        {new Date().getFullYear()} | Yehezkiel Gunawan
+        Github
       </a>
     </footer>
   );

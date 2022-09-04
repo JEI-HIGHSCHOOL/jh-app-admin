@@ -1,15 +1,31 @@
 import React from "react";
 
-import FooterComponent from "@/components/layouts/FooterComponent";
 import HeaderComponent from "@/components/layouts/HeaderComponent";
+import SideBar from "../SideBar";
+import useSWR from "swr";
+import { User } from "@/types";
+import { swrFetcher } from "@/lib/helpers/client";
+import Login from "../Login";
+import Loading from "../Loading";
+import { useRouter } from "next/router";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
+  const { data: userData, error: userError } = useSWR<User>(
+    "/auth/me",
+    swrFetcher
+  );
+  if (userError) return <Login />;
+  if (!userData) return <Loading />;
   return (
-    <section className="dark:bg-dark">
+    <>
       <HeaderComponent />
-      <div className="layout-container">{children}</div>
-      <FooterComponent />
-    </section>
+      <SideBar user={userData} />
+      <section
+        className={`z-0 min-h-[100vh] py-[58px] dark:bg-dark lg:pl-[300px]`}
+      >
+        {children}
+      </section>
+    </>
   );
 };
 

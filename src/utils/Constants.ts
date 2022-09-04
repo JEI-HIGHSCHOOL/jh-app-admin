@@ -1,0 +1,26 @@
+export const SideBarItems = [
+    {
+        path: "/",
+        name: "홈",
+        icon: "fas fa-home",
+        category: "none"
+    },
+    {
+        path: "/users",
+        name: "유저관리",
+        icon: "fas fa-user",
+        category: "manage"
+    },
+    {
+        path: "/notice",
+        name: "공지추가",
+        icon: "fas fa-bell",
+        category: "alert"
+    },
+    {
+        path: "/notices",
+        name: "공지관리",
+        icon: "fas fa-list",
+        category: "alert"
+    }
+]

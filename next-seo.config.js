@@ -1,35 +1,22 @@
 /** @type {import('next-seo').DefaultSeoProps} */
 const defaultSEOConfig = {
-  defaultTitle: "YehezGun's Next.js + Tailwind Starter",
+  defaultTitle: "인천재능고등학교",
   description:
-    "Yehezkiel Gunawan's personalized Next.js + Tailwind CSS + TypeScript starter template",
-  canonical: "https://yehez-nexttailwind-starter.yehezgun.com",
+    "인천재능고등학교 앱 관리자 페이지 입니다",
+  canonical: "https://jhschool.xyz",
   openGraph: {
-    url: "https://yehez-nexttailwind-starter.yehezgun.com",
-    title: "YehezGun's Next.js + Tailwind Starter",
-    description: "Next.js + Tailwind CSS + TypeScript template",
+    url: "https://jhschool.xyz",
+    title: "인천재능고등학교",
+    description: "인천재능고등학교 앱 관리자 페이지 입니다",
     type: "website",
     images: [
       {
-        url: "https://og.yehezgun.com/api/base?description=A%20personalized%20Next.js%20%2B%20TS%20%2B%20Tailwind%20CSS%20starter%20template%20by%20Yehezkiel%20Gunawan&siteName=nexttw-starter.yehezgun.com&templateTitle=Next.js%20%2B%20TS%20%2BTailwind%20Starter%20Template&theme=dark",
-        alt: "yehez-nexttailwind-starter.yehezgun.com og-image",
-        width: 800,
-        height: 600,
+        url: "https://jhschool.xyz/page_logo.png",
+        alt: "jhpagelogo",
       },
     ],
-    site_name: "yehez-nexttailwind-starter",
+    site_name: "인천재능고등학교",
   },
-  twitter: {
-    handle: "@handle",
-    site: "@site",
-    cardType: "summary_large_image",
-  },
-  additionalLinkTags: [
-    {
-      rel: "icon",
-      href: "https://assets.vercel.com/image/upload/v1607554385/repositories/next-js/next-logo.png",
-    },
-  ],
 };
 
 export default defaultSEOConfig;

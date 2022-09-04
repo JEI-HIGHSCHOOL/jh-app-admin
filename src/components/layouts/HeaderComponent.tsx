@@ -1,46 +1,27 @@
+import { swrFetcher } from "@/lib/helpers/client";
+import { User } from "@/types";
 import clsx from "clsx";
-import { useTheme } from "next-themes";
+import Image from "next/image"
 import React from "react";
-import { BiMoon, BiSun } from "react-icons/bi";
+import useSWR from "swr";
+import Loading from "../Loading";
+import Login from "../Login";
 
-import Button from "../buttons/Button";
-
-import clsxm from "@/lib/helpers/clsxm";
 
 const HeaderComponent = () => {
-  const { resolvedTheme, setTheme } = useTheme();
-
-  const handleChangeTheme = () => {
-    return setTheme(resolvedTheme === "light" ? "dark" : "light");
-  };
-
+  const {data: userData, error: userError} = useSWR<User>('/auth/me', swrFetcher)
+  if(userError) return <Login/>
+  if(!userData) return <Loading/>
   return (
-    <header className="fixed top-0 z-50 w-full bg-white p-0.5 opacity-90 dark:bg-gray-700">
+    <header className="fixed top-0 z-50 w-full bg-white p-0.5 opacity-100 dark:bg-gray-700 border-b">
       <div
         className={clsx(
-          "flex items-center justify-between",
-          "mx-auto h-14 max-w-5xl px-2 md:px-1"
+          "flex items-center md:justify-between justify-center",
+          "mx-auto h-14 max-w-[80vw] px-2"
         )}
       >
-        <h5 className="font-bold text-black dark:text-white">
-          yehez-nexttailwind-starter
-        </h5>
-        <Button
-          variant="outline"
-          className={clsxm(
-            "dark:border-white dark:text-white dark:hover:bg-gray-500",
-            "hover:border-black hover:bg-gray-200",
-            "border-black p-2 text-black",
-            "rounded-full transition hover:rotate-45"
-          )}
-          onClick={() => handleChangeTheme()}
-        >
-          {resolvedTheme === "light" ? (
-            <BiMoon size={20} />
-          ) : (
-            <BiSun size={20} />
-          )}
-        </Button>
+        <Image src={"/page_logo.png"} width="230" height="45" alt="logo"/>
+        <span className="text-lg font-bold hidden md:block">{userData.name}님</span>
       </div>
     </header>
   );
