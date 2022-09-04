@@ -21,7 +21,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <HeaderComponent />
       <SideBar user={userData} />
       <section
-        className={`z-0 min-h-[100vh] py-[58px] dark:bg-dark lg:pl-[300px]`}
+        className={`z-0 min-h-[100vh] py-[58px] lg:pl-[300px]`}
       >
         {children}
       </section>

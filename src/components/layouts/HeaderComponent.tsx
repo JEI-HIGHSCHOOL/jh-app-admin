@@ -13,7 +13,7 @@ const HeaderComponent = () => {
   if(userError) return <Login/>
   if(!userData) return <Loading/>
   return (
-    <header className="fixed top-0 z-50 w-full bg-white p-0.5 opacity-100 dark:bg-gray-700 border-b">
+    <header className="fixed top-0 z-50 w-full bg-white p-0.5 opacity-100 border-b">
       <div
         className={clsx(
           "flex items-center md:justify-between justify-center",
