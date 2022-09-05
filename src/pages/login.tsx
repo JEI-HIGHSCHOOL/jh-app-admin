@@ -24,7 +24,7 @@ const Login: NextPage = () => {
       if (res.error) {
         return setError(res.message);
       }
-      router.push("/");
+      window.location.href = "/"
     });
   };
   return (

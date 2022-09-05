@@ -12,7 +12,7 @@ export const SideBarItems = [
         category: "manage"
     },
     {
-        path: "/notice",
+        path: "/publishnotice",
         name: "공지추가",
         icon: "fas fa-bell",
         category: "alert"
@@ -20,6 +20,18 @@ export const SideBarItems = [
     {
         path: "/notices",
         name: "공지관리",
+        icon: "fas fa-list",
+        category: "alert"
+    },
+    {
+        path: "/publishbanner",
+        name: "배너추가",
+        icon: "fas fa-sign",
+        category: "alert"
+    },
+    {
+        path: "/banners",
+        name: "배너관리",
         icon: "fas fa-list",
         category: "alert"
     }

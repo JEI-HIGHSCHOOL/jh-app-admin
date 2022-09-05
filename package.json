@@ -17,6 +17,7 @@
     "babel-loader": "^8.2.5",
     "babel-plugin-transform-remove-imports": "^1.7.0",
     "clsx": "^1.1.1",
+    "dayjs": "^1.11.5",
     "lottie-web": "^5.9.6",
     "next": "^12.2.2",
     "next-remove-imports": "^1.0.7",

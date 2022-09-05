@@ -13,38 +13,26 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
-  const router = useRouter()
-  const [password, setPassword] = useState<string>();
-  const [changePassword, setChangePassword] = useState<string>()
-  const [changePasswordCheck, setChangePasswordCheck] = useState<string>()
-  const [changePasswordLoading, setChangePasswordLoading] = useState<boolean>()
+  const router = useRouter();
   const { data: userData, error: userError } = useSWR<User>(
     "/auth/me",
     swrFetcher
   );
+  const { data: analyticsData, error: analyticsError } = useSWR<{
+    device: number,
+    banner: number,
+    notice: number
+  }>(
+    "/web/analytics",
+    swrFetcher
+  );
   if (userError) return <Login />;
-  if (!userData) return <Loading />;
-  if(!checkUserFlag(userData.flags, "teacher")) {
-    Toast("접근 권한이 없습니다", "error")
-    return <Login />
-  } 
-  const changePasswordHanler = () => {
-    if(changePasswordCheck !== changePassword) return Toast("비밀번호가 일치하지 않습니다", "error")
-    setChangePasswordLoading(true)
-    client("POST", "/users/changepassword", {
-      password,
-      changePassword
-    }).then((res) => {
-      setChangePasswordLoading(false)
-      if(res.error) {
-        return Toast(res.message, "error")
-      }
-      Toast("비밀번호가 변경되었습니다", "success")
-      client("POST", "/auth/logout").then((res) => {
-        router.push('/login')
-      })
-    })
+  if (!userData||!analyticsData) return <Loading />;
+  if (!checkUserFlag(userData.flags, "teacher")) {
+    Toast("접근 권한이 없습니다", "error");
+    return <Login />;
   }
+
   return (
     <Layout>
       <main className="flex flex-col p-5">
@@ -52,30 +40,101 @@ const Home: NextPage = () => {
           어서오세요, {userData.name}{" "}
           {checkUserFlag(userData.flags, "teacher") && "선생"}님
         </h1>
-        <span className="mt-5 text-xl font-bold">
-          회원정보
-        </span>
-        <div className="mt-1 flex flex-row text-lg items-center max-w-sm w-full justify-between">
-          <span className="mr-5"><i className="fa fa-user mr-2" />아이디</span>
-          <span>{userData.id.substring(userData.id.length / 2, 0).padStart(userData.id.length / 2).padEnd(userData.id.length, "*")}</span>
+        <div className="mt-5 flex flex-row flex-wrap">
+          <div className="max-w-80 mr-1.5 ml-1.5 mb-5 h-44 max-h-44 w-80 rounded-md border bg-white">
+            <div className="flex h-[7.5rem] items-center justify-between px-5">
+              <div className="flex flex-col">
+                <div className="text-3xl font-bold text-emerald-600">
+                  {analyticsData.device}
+                  <span>개</span>
+                </div>
+                <span className="text-xl text-gray-500">
+                  등록된 디바이스
+                </span>
+              </div>
+              <div>
+                <i className="fas fa-mobile-alt text-4xl" />
+              </div>
+            </div>
+            <div
+              onClick={() => {
+                
+              }}
+              className="flex h-14 cursor-pointer items-center justify-between rounded-b-md border-b bg-gradient-to-r from-emerald-600 to-emerald-400 px-5 text-white"
+            >
+              <span className="text-lg font-bold">
+                디바이스 관리 (개발중)
+              </span>
+              <i className="fas fa-hammer" />
+            </div>
+          </div>
+          <div className="max-w-80 mr-1.5 ml-1.5 mb-5 h-44 max-h-44 w-80 rounded-md border bg-white">
+            <div className="flex h-[7.5rem] items-center justify-between px-5">
+              <div className="flex flex-col">
+                <div className="text-3xl font-bold text-emerald-600">
+                {analyticsData.notice}
+                  <span>개</span>
+                </div>
+                <span className="text-xl text-gray-500">
+                  등록된 공지
+                </span>
+              </div>
+              <div>
+                <i className="far fa-sticky-note text-4xl" />
+              </div>
+            </div>
+            <div
+              onClick={() => {
+                router.push('/notices')
+              }}
+              className="cursor-pointer h-14 bg-gradient-to-r from-sky-600 to-sky-400 rounded-b-md flex items-center text-white justify-between px-5 border-b"
+            >
+              <span className="text-lg font-bold">
+                공지관리
+              </span>
+              <i className="fas fa-hammer" />
+            </div>
+          </div>
+          <div className="max-w-80 mr-1.5 ml-1.5 mb-5 h-44 max-h-44 w-80 rounded-md border bg-white">
+            <div className="flex h-[7.5rem] items-center justify-between px-5">
+              <div className="flex flex-col">
+                <div className="text-3xl font-bold text-emerald-600">
+                {analyticsData.banner}
+                  <span>개</span>
+                </div>
+                <span className="text-xl text-gray-500">
+                  표시중인 배너
+                </span>
+              </div>
+              <div>
+                <i className="fas fa-bell text-4xl" />
+              </div>
+            </div>
+            <div
+              onClick={() => {
+                router.push('/banners')
+              }}
+              className="cursor-pointer h-14 bg-gradient-to-r from-purple-600 to-purple-400 rounded-b-md flex items-center text-white justify-between px-5 border-b"
+            >
+              <span className="text-lg font-bold">
+                배너관리
+              </span>
+              <i className="fas fa-hammer" />
+            </div>
+          </div>
         </div>
-        <div className="mt-2 flex flex-col text-lg">
-          <span><i className="fa fa-lock mr-2" />비밀번호</span>
-          <div className="flex flex-col mt-2 lg:items-center items-start justify-between max-w-sm lg:flex-row">
-            <span>기존 비밀번호</span>
-            <Input className="lg:w-fit w-full" placeholder="기존 비밀번호" type={"password"} onChangeHandler={setPassword}/>
-          </div>
-          <div className="flex flex-col mt-2 lg:items-center items-start justify-between max-w-sm lg:flex-row">
-            <span>변경할 비밀번호</span>
-            <Input className="lg:w-fit w-full" placeholder="변경할 비밀번호" type={"password"} onChangeHandler={setChangePassword}/>
-          </div>
-          <div className="flex flex-col mt-2 lg:items-center items-start justify-between max-w-sm lg:flex-row">
-            <span>비밀번호 확인</span>
-            <Input className="lg:w-fit w-full" placeholder="변경할 비밀번호 확인" type={"password"} onChangeHandler={setChangePasswordCheck}/>
-          </div>
-          <div className="flex items-end justify-end mt-2 w-full max-w-sm">
-            <Button isLoading={changePasswordLoading} onClick={() => changePasswordHanler()} variant="outline" className="h-10 text-lg">비밀번호 변경</Button>
-          </div>
+        <span className="mt-5 text-xl font-bold px-2">회원정보</span>
+        <div className="mt-1 flex w-full max-w-sm flex-row items-center justify-between text-lg px-2">
+          <span className="mr-5">
+            <i className="fa fa-user mr-2" />
+            아이디
+          </span>
+          <span>
+            {userData.id
+              .substring(userData.id.length / 2, 0)
+              .padStart(userData.id.length / 2)
+              .padEnd(userData.id.length, "*")}
+          </span>
         </div>
       </main>
     </Layout>

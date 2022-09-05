@@ -13,10 +13,12 @@ import { useState } from "react";
 import Button from "@/components/buttons/Button";
 import Input from "@/components/Input";
 import { Toast } from "@/utils/utils";
+import { useRouter } from "next/router";
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
 const Notice: NextPage = () => {
+  const router = useRouter()
   const [onPushAlert, setOnPushAlert] = useState(false);
   const [title, setTitle] = useState<string>();
   const [description, setDescription] = useState("내용을 입력해주세요");
@@ -39,9 +41,7 @@ const Notice: NextPage = () => {
         if(res.error) {
             return Toast(res.message, "error")
         } else {
-            setDescription("내용을 입력해주세요")
-            setTitle(undefined)
-            setOnPushAlert(false)
+            router.push('/notices')
             Toast("성공적으로 공지가 등록되었습니다", "success")
         }
     })

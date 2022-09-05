@@ -61,7 +61,7 @@ const SideBar: React.FC<SideBarProps> = ({ user }) => {
               </Link>
             </>
           ))}
-          {checkUserFlag(user.flags, "teacher") && (
+          {checkUserFlag(user.flags, "admin") && (
             <div>
               <button
                 className="my-2 flex w-full items-center justify-between px-3"
@@ -97,12 +97,12 @@ const SideBar: React.FC<SideBarProps> = ({ user }) => {
                       <a
                         key={index}
                         className={`${
-                          item.path === router.pathname ? "bg-gray-100" : ""
+                          router.asPath === item.path ? "bg-gray-100" : ""
                         } flex h-[45px] min-h-[45px] w-full flex-row items-center justify-between rounded-xl px-5 py-1.5`}
                       >
                         <div
                           className={`flex items-center ${
-                            item.path === router.pathname
+                            router.asPath === item.path
                               ? "opacity-100"
                               : "opacity-60 hover:opacity-100"
                           }`}
@@ -134,7 +134,7 @@ const SideBar: React.FC<SideBarProps> = ({ user }) => {
                 else setOpenAlert(true);
               }}
             >
-              <span className="text-sm font-bold ">알림</span>
+              <span className="text-sm font-bold ">앱 관리</span>
               <i
                 className={`fas fa-caret-up ${openAlert ? "rotate-180" : ""}`}
                 style={{
@@ -155,16 +155,16 @@ const SideBar: React.FC<SideBarProps> = ({ user }) => {
                 return item.category === "alert";
               }).map((item, index) => (
                 <>
-                  <Link key={item.path} href={`/${item.path}`}>
+                  <Link key={item.path} href={item.path}>
                     <a
                       key={index}
                       className={`${
-                        item.path === router.pathname ? "bg-gray-100" : ""
+                        router.pathname.startsWith(item.path) ? "bg-gray-100" : ""
                       } flex h-[45px] min-h-[45px] w-full flex-row items-center justify-between rounded-xl px-5 py-1.5`}
                     >
                       <div
                         className={`flex items-center ${
-                          item.path === router.pathname
+                          router.pathname.startsWith(item.path)
                             ? "opacity-100"
                             : "opacity-60 hover:opacity-100"
                         }`}
