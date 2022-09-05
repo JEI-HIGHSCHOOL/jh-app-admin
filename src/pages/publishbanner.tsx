@@ -15,8 +15,6 @@ import Input from "@/components/Input";
 import { Toast } from "@/utils/utils";
 import { useRouter } from "next/router";
 
-const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
-
 const Notice: NextPage = () => {
   const router = useRouter();
   const [title, setTitle] = useState<string>("제목");
@@ -70,13 +68,13 @@ const Notice: NextPage = () => {
             </div>
             <div className="mt-2 w-full">
               <h4 className="mb-1">아이콘</h4>
-              <Input onChangeHandler={setIcon} placeholder={"아이곤"} />
+              <Input onChangeHandler={setIcon} placeholder={"아이콘"} />
               <span>
                 아이콘 목록은{" "}
                 <a
                   className="font-bold text-blue-600"
                   rel="noreferrer"
-                  href="https://oblador.github.io/react-native-vector-icons/"
+                  href="https://materialdesignicons.com/"
                   target={"_blank"}
                 >
                   여기
