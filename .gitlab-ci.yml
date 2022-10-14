@@ -20,6 +20,10 @@ build:
     - docker:dind
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+    # environment file
+    - echo $ENV_FILE
+    # File is outside of build context, so make local copy.
+    - cp $ENV_FILE .env.production.local
     - docker build -t $DOKCER_IMAGE_URL .
     - docker push $DOKCER_IMAGE_URL
   only:
