@@ -83,7 +83,7 @@ const Login: NextPage = () => {
           variant="primary"
           className="mt-12 flex w-64 items-center justify-center"
         >
-          회원가힙
+          회원가입
         </Button>
         <Link href={"/login"}>
           <a className="mt-1 flex items-center justify-center">
