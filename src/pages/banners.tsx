@@ -17,6 +17,7 @@ import Pagination from "@/components/Pagination";
 import { useRouter } from "next/router";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
+import clsx from "clsx";
 type NoticeSearchType = "name" | "content";
 const PER_PAGE = 20;
 const Notice: NextPage = () => {
@@ -30,16 +31,17 @@ const Notice: NextPage = () => {
     "/auth/me",
     swrFetcher
   );
-  const { data: bannersData, error: bannersError, mutate: reloadBanners } = useSWR<Banner[]>(
-    "/banners/admin",
-    swrFetcher
-  );
+  const {
+    data: bannersData,
+    error: bannersError,
+    mutate: reloadBanners,
+  } = useSWR<Banner[]>("/banners/admin", swrFetcher);
 
   if (userError) return <Login />;
   if (!userData || !bannersData) return <Loading />;
   const filterNotices = (search?: string) => {
     return bannersData
-      ?.filter(one => {
+      ?.filter((one) => {
         if (!search) return true;
         let searchLowercase = search.normalize().toLowerCase();
 
@@ -86,26 +88,26 @@ const Notice: NextPage = () => {
     setNoticeSearch("");
   };
   const disableBanner = (id: string) => {
-    setUploading(true)
+    setUploading(true);
     client("POST", `/banners/${id}/disable`).then((res) => {
-        setUploading(false)
-        if(res.error) {
-            return Toast(res.message, "error")
-        }
-        Toast("배너가 비활성화 되었습니다", "success")
-        reloadBanners()
-    })
+      setUploading(false);
+      if (res.error) {
+        return Toast(res.message, "error");
+      }
+      Toast("배너가 비활성화 되었습니다", "success");
+      reloadBanners();
+    });
   };
   const enableBanner = (id: string) => {
-    setUploading(true)
+    setUploading(true);
     client("POST", `/banners/${id}/enable`).then((res) => {
-        setUploading(false)
-        if(res.error) {
-            return Toast(res.message, "error")
-        }
-        Toast("배너가 활성화 되었습니다", "success")
-        reloadBanners()
-    })
+      setUploading(false);
+      if (res.error) {
+        return Toast(res.message, "error");
+      }
+      Toast("배너가 활성화 되었습니다", "success");
+      reloadBanners();
+    });
   };
   return (
     <Layout>
@@ -119,7 +121,7 @@ const Notice: NextPage = () => {
                 className="form-check-input float-left mt-1 mr-2 h-4 w-4 cursor-pointer appearance-none rounded-sm border border-gray-300 bg-white bg-contain bg-center bg-no-repeat align-top transition duration-200 checked:border-blue-600 checked:bg-blue-600 focus:outline-none dark:text-white"
                 type="checkbox"
                 checked={noticeSearchType === "name"}
-                onChange={e => handleNoticesSearchTypeOnChange("name")}
+                onChange={(e) => handleNoticesSearchTypeOnChange("name")}
                 id={` flexCheckChecked-name`}
               />
               <label
@@ -134,7 +136,7 @@ const Notice: NextPage = () => {
                 className="form-check-input float-left mt-1 mr-2 h-4 w-4 cursor-pointer appearance-none rounded-sm border border-gray-300 bg-white bg-contain bg-center bg-no-repeat align-top transition duration-200 checked:border-blue-600 checked:bg-blue-600 focus:outline-none dark:text-white"
                 type="checkbox"
                 checked={noticeSearchType === "content"}
-                onChange={e => handleNoticesSearchTypeOnChange("content")}
+                onChange={(e) => handleNoticesSearchTypeOnChange("content")}
                 id={` flexCheckChecked-content`}
               />
               <label
@@ -172,15 +174,26 @@ const Notice: NextPage = () => {
                   </div>
                 </div>
                 <div>
-                  {notice.show ? (
-                    <Button isLoading={uploading} onClick={() => {disableBanner(notice._id)}} variant="ghost">
-                      비활성화
-                    </Button>
-                  ) : (
-                    <Button isLoading={uploading} onClick={() => {enableBanner(notice._id)}} variant="ghost">
-                      활성화
-                    </Button>
-                  )}
+                  <select
+                    className={clsx(
+                      "inline-flex items-center rounded px-3 py-2 font-medium",
+                      "focus:outline-none focus:ring-0 focus-visible:border-2 focus-visible:border-orange-500",
+                      "shadow-sm w-24",
+                      "transition-colors duration-75",
+                      "border border-gray-300 bg-white"
+                    )}
+                    value={notice.show ? "show" : "hide"}
+                    onChange={(e) => {
+                      if (e.target.value === "show") {
+                        enableBanner(notice._id);
+                      } else {
+                        disableBanner(notice._id);
+                      }
+                    }}
+                  >
+                    <option value="show">표시</option>
+                    <option value="hide">미표시</option>
+                  </select>
                 </div>
               </div>
             </>

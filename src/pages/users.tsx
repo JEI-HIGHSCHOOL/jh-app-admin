@@ -12,6 +12,7 @@ import Button from "@/components/buttons/Button";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Pagination from "@/components/Pagination";
+import clsx from "clsx";
 type MemberSearchType = "name" | "id";
 
 const Users: NextPage = () => {
@@ -162,22 +163,27 @@ const Users: NextPage = () => {
                   </span>
                 </div>
                 <div>
-                  <Button
-                    onClick={() => {
-                      userRoleHanler(user, "teacher");
+                <select
+                    className={clsx(
+                      "inline-flex items-center rounded px-3 py-2 font-medium",
+                      "focus:outline-none focus:ring-0 focus-visible:border-2 focus-visible:border-orange-500",
+                      "shadow-sm w-48",
+                      "transition-colors duration-75",
+                      "border border-gray-300 bg-white"
+                    )}
+                    defaultValue={"default"}
+                    onChange={(e) => {
+                      if (e.target.value === "teacher") {
+                        userRoleHanler(user, "teacher");
+                      } else if (e.target.value === "admin") {
+                        userRoleHanler(user, "admin");
+                      }
                     }}
-                    variant="ghost"
                   >
-                    선생님 권한
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      userRoleHanler(user, "admin");
-                    }}
-                    variant="ghost"
-                  >
-                    관리자 권한
-                  </Button>
+                    <option value="default">권한</option>
+                    <option value="teacher">선생님 권한</option>
+                    <option value="admin">관리자 권한</option>
+                  </select>
                 </div>
               </div>
             </>
