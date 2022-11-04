@@ -173,14 +173,12 @@ const Users: NextPage = () => {
                     )}
                     defaultValue={"default"}
                     onChange={(e) => {
-                      if (e.target.value === "teacher") {
-                        userRoleHanler(user, "teacher");
-                      } else if (e.target.value === "admin") {
-                        userRoleHanler(user, "admin");
-                      }
+                      if(e.target.value === "default") return
+                      userRoleHanler(user, e.target.value);
                     }}
                   >
                     <option value="default">권한</option>
+                    <option value="busdriver">버스기사 권한</option>
                     <option value="teacher">선생님 권한</option>
                     <option value="admin">관리자 권한</option>
                   </select>
