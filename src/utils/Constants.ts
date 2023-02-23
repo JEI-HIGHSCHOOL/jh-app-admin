@@ -34,5 +34,17 @@ export const SideBarItems = [
         name: "배너관리",
         icon: "fas fa-list",
         category: "alert"
+    },
+    {
+        path: "/students",
+        name: "학생관리",
+        icon: "fas fa-user-graduate",
+        category: "manage"
+    },
+    {
+        path: "/approvalstudents",
+        name: "학생관리 (승인대기)",
+        icon: "fas fa-user-graduate",
+        category: "manage"
     }
 ]

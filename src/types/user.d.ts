@@ -6,6 +6,18 @@ export interface User {
   flags: number;
 }
 
+export interface Student {
+  _id: string;
+  phone: string;
+  name: string;
+  password?: string;
+  department: string;
+  grade: string;
+  class: string;
+  number: string;
+  isVerified: boolean;
+}
+
 export enum UserFlags {
   general = 0 << 0,
   student = 1 << 1,
