@@ -15,8 +15,10 @@ export interface Student {
   grade: string;
   class: string;
   number: string;
+  route: BusRoute;
   isVerified: boolean;
 }
+
 
 export enum UserFlags {
   general = 0 << 0,

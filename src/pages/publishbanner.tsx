@@ -8,7 +8,6 @@ import client, { swrFetcher } from "@/lib/helpers/client";
 import { User } from "@/types";
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
-import dynamic from "next/dynamic";
 import { useState } from "react";
 import Button from "@/components/buttons/Button";
 import Input from "@/components/Input";
@@ -37,7 +36,7 @@ const Notice: NextPage = () => {
       description,
       color,
       url,
-      icon
+      icon,
     }).then(res => {
       setUploading(false);
       if (res.error) {
@@ -64,7 +63,10 @@ const Notice: NextPage = () => {
             </div>
             <div className="mt-2 w-full">
               <h4 className="mb-1">링크</h4>
-              <Input onChangeHandler={setUrl} placeholder={"클릭시 이동될 링크"} />
+              <Input
+                onChangeHandler={setUrl}
+                placeholder={"클릭시 이동될 링크"}
+              />
             </div>
             <div className="mt-2 w-full">
               <h4 className="mb-1">아이콘</h4>
@@ -134,7 +136,15 @@ const Notice: NextPage = () => {
             </div>
           </div>
         </div>
-        <Button onClick={() => {uploadBanner()}} className="flex items-center justify-center mt-5" variant="primary">등록하기</Button>
+        <Button
+          onClick={() => {
+            uploadBanner();
+          }}
+          className="mt-5 flex items-center justify-center"
+          variant="primary"
+        >
+          등록하기
+        </Button>
       </main>
     </Layout>
   );

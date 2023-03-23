@@ -11,10 +11,17 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import useSWR from "swr";
 
-type MemberSearchType = "name" | "phone";
+
+enum BusRoute {
+  seogu = "서구",
+  namgu = "남구",
+  buphong = "부평",
+  yeonsu = "연수",
+}
+
+type MemberSearchType = "name" | "phone" | "route";
 
 const Students = () => {
-  const router = useRouter();
   const [memberSearchType, setMemberSearchType] =
     useState<MemberSearchType>("name");
   const [memberSearch, setMemberSearch] = useState<string>();
@@ -44,18 +51,20 @@ const Students = () => {
       url: `${process.env.NEXT_PUBLIC_API_URL}/web/students/borading/xlsx/${id}`,
       method: "GET",
       responseType: "blob",
-      withCredentials: true
+      withCredentials: true,
     })
       .then(response => {
         setDownloadStudentBoardingXlsxLoading(false);
         const url = URL.createObjectURL(response.data);
         const link = document.createElement("a");
         link.href = url;
-        console.log(response.headers['filename'])
+        console.log(response.headers["filename"]);
         link.setAttribute(
           "download",
           `${
-            response.headers['filename'] ? decodeURIComponent(response.headers['filename']) : "탑승기록"
+            response.headers["filename"]
+              ? decodeURIComponent(response.headers["filename"])
+              : "탑승기록"
           }`
         );
         link.style.cssText = "display:none";
@@ -120,12 +129,49 @@ const Students = () => {
                   전화번호
                 </label>
               </div>
+              <div className="form-check">
+                <input
+                  className="form-check-input float-left mt-1 mr-2 h-4 w-4 cursor-pointer appearance-none rounded-sm border border-gray-300 bg-white bg-contain bg-center bg-no-repeat align-top transition duration-200 checked:border-blue-600 checked:bg-blue-600 focus:outline-none dark:text-white"
+                  type="checkbox"
+                  checked={memberSearchType === "route"}
+                  onChange={e => handleMemberSearchTypeOnChange("route")}
+                  id={` flexCheckChecked-route`}
+                />
+                <label
+                  className="form-check-label inline-block text-gray-800 dark:text-white"
+                  htmlFor={` flexCheckChecked-route`}
+                >
+                  노선
+                </label>
+              </div>
             </div>
-            <Input
-              className="w-48"
-              placeholder={"검색어"}
-              onChangeHandler={setMemberSearch}
-            />
+            {memberSearchType === "route" ? (
+              <>
+                <div className="flex flex-row items-center">
+                  <select
+                    onChange={e => {
+                      if(e.target.value == "all") {
+                        return setMemberSearch("");
+                      }
+                      setMemberSearch(e.target.value);
+                    }}
+                    className="w-28 rounded-md"
+                  >
+                    <option value="all">전체</option>
+                    <option value="seogu">서구</option>
+                    <option value="namgu">남구</option>
+                    <option value="yeonsu">연수구</option>
+                    <option value="buphong">부평</option>
+                  </select>
+                </div>
+              </>
+            ) : (
+              <Input
+                className="w-48"
+                placeholder={"검색어"}
+                onChangeHandler={setMemberSearch}
+              />
+            )}
           </div>
           <div className="mt-2 flex w-full max-w-4xl flex-col items-center justify-between overflow-auto">
             <table className="min-w-full ">
@@ -148,6 +194,9 @@ const Students = () => {
                   </th>
                   <th scope="col" className="mx-auto px-6 py-4 text-left">
                     번호
+                  </th>
+                  <th scope="col" className="mx-auto px-6 py-4 text-left">
+                    노선
                   </th>
                   <th scope="col" className="mx-auto px-6 py-4 text-left">
                     탑승기록
@@ -175,6 +224,9 @@ const Students = () => {
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
                         {student.number}
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+                        {BusRoute[student.route]}
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
                         <button
