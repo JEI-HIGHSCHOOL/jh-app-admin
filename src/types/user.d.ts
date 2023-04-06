@@ -27,3 +27,14 @@ export enum UserFlags {
   teacher = 1 << 3,
   admin = 1 << 5,
 }
+
+export interface StudentWithBusBoarding extends Student {
+  boarding: StudentBusBoarding
+}
+
+export interface StudentBusBoarding {
+  _id: string;
+  userId: string;
+  busId: string;
+  bordingTime: Date;
+}

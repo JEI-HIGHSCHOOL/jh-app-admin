@@ -11,7 +11,6 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import useSWR from "swr";
 
-
 enum BusRoute {
   seogu = "서구",
   namgu = "남구",
@@ -29,6 +28,14 @@ const Students = () => {
     downloadStudentBoardingXlsxLoading,
     setDownloadStudentBoardingXlsxLoading,
   ] = useState<boolean>();
+  const [
+    deleteStudentLoading,
+    setDeleteStudentLoading,
+  ] = useState<boolean>();
+  const [
+    downloadStudentsBoardingXlsxLoading,
+    setDownloadStudentsBoardingXlsxLoading,
+  ] = useState<boolean>();
 
   const { data: userData, error: userError } = useSWR<User>(
     "/auth/me",
@@ -45,6 +52,20 @@ const Students = () => {
     setMemberSearchType(type);
   };
 
+  const handleDeleteStudent = async (id: string) => {
+    const isDelete = confirm("정말 삭제하시겠습니까?");
+    if (!isDelete) return;
+    setDeleteStudentLoading(true);
+    try {
+      await client("DELETE",`/web/students/${id}`);
+      Toast("학생을 삭제했습니다", "success");
+    } catch (e) {
+      Toast("학생을 삭제하지 못했습니다", "error");
+    } finally {
+      setDeleteStudentLoading(false);
+    }
+  };
+
   const downloadStudentBoardingXlsx = async (id: string) => {
     setDownloadStudentBoardingXlsxLoading(true);
     axios({
@@ -53,7 +74,7 @@ const Students = () => {
       responseType: "blob",
       withCredentials: true,
     })
-      .then(response => {
+      .then((response) => {
         setDownloadStudentBoardingXlsxLoading(false);
         const url = URL.createObjectURL(response.data);
         const link = document.createElement("a");
@@ -89,6 +110,50 @@ const Students = () => {
       });
   };
 
+  const downloadStudentsBoardingXlsx = async () => {
+    setDownloadStudentsBoardingXlsxLoading(true);
+    axios({
+      url: `${process.env.NEXT_PUBLIC_API_URL}/web/students/borading/xlsx`,
+      method: "GET",
+      responseType: "blob",
+      withCredentials: true,
+    })
+      .then((response) => {
+        setDownloadStudentsBoardingXlsxLoading(false);
+        const url = URL.createObjectURL(response.data);
+        const link = document.createElement("a");
+        link.href = url;
+        console.log(response.headers["filename"]);
+        link.setAttribute(
+          "download",
+          `${
+            response.headers["filename"]
+              ? decodeURIComponent(response.headers["filename"])
+              : "탑승기록"
+          }`
+        );
+        link.style.cssText = "display:none";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        Toast("탑승기록이 다운로드 중 입니다", "success");
+      })
+      .catch((e: AxiosError) => {
+        setDownloadStudentsBoardingXlsxLoading(false);
+        const message: {
+          message?: string;
+        } = e.response?.data as any;
+        console.log(message);
+        Toast(
+          `탑승기록 다운로드에 실패했습니다 : ${
+            message ? message.message : "알 수 없는 오류가 발생했습니다"
+          }`,
+          "error"
+        );
+      });
+  };
+
   if (userError) return <Login />;
   if (!userData) return <Loading />;
   return (
@@ -104,7 +169,7 @@ const Students = () => {
                   className="form-check-input float-left mt-1 mr-2 h-4 w-4 cursor-pointer appearance-none rounded-sm border border-gray-300 bg-white bg-contain bg-center bg-no-repeat align-top transition duration-200 checked:border-blue-600 checked:bg-blue-600 focus:outline-none dark:text-white"
                   type="checkbox"
                   checked={memberSearchType === "name"}
-                  onChange={e => handleMemberSearchTypeOnChange("name")}
+                  onChange={(e) => handleMemberSearchTypeOnChange("name")}
                   id={` flexCheckChecked-name`}
                 />
                 <label
@@ -119,7 +184,7 @@ const Students = () => {
                   className="form-check-input float-left mt-1 mr-2 h-4 w-4 cursor-pointer appearance-none rounded-sm border border-gray-300 bg-white bg-contain bg-center bg-no-repeat align-top transition duration-200 checked:border-blue-600 checked:bg-blue-600 focus:outline-none dark:text-white"
                   type="checkbox"
                   checked={memberSearchType === "phone"}
-                  onChange={e => handleMemberSearchTypeOnChange("phone")}
+                  onChange={(e) => handleMemberSearchTypeOnChange("phone")}
                   id={` flexCheckChecked-phone`}
                 />
                 <label
@@ -134,7 +199,7 @@ const Students = () => {
                   className="form-check-input float-left mt-1 mr-2 h-4 w-4 cursor-pointer appearance-none rounded-sm border border-gray-300 bg-white bg-contain bg-center bg-no-repeat align-top transition duration-200 checked:border-blue-600 checked:bg-blue-600 focus:outline-none dark:text-white"
                   type="checkbox"
                   checked={memberSearchType === "route"}
-                  onChange={e => handleMemberSearchTypeOnChange("route")}
+                  onChange={(e) => handleMemberSearchTypeOnChange("route")}
                   id={` flexCheckChecked-route`}
                 />
                 <label
@@ -145,33 +210,51 @@ const Students = () => {
                 </label>
               </div>
             </div>
-            {memberSearchType === "route" ? (
-              <>
-                <div className="flex flex-row items-center">
-                  <select
-                    onChange={e => {
-                      if(e.target.value == "all") {
-                        return setMemberSearch("");
-                      }
-                      setMemberSearch(e.target.value);
-                    }}
-                    className="w-28 rounded-md"
-                  >
-                    <option value="all">전체</option>
-                    <option value="seogu">서구</option>
-                    <option value="namgu">남구</option>
-                    <option value="yeonsu">연수구</option>
-                    <option value="buphong">부평</option>
-                  </select>
-                </div>
-              </>
-            ) : (
-              <Input
-                className="w-48"
-                placeholder={"검색어"}
-                onChangeHandler={setMemberSearch}
-              />
-            )}
+            <div className="flex flex-row items-center justify-center space-x-2">
+              {memberSearchType === "route" ? (
+                <>
+                  <div className="flex flex-row items-center">
+                    <select
+                      onChange={(e) => {
+                        if (e.target.value == "all") {
+                          return setMemberSearch("");
+                        }
+                        setMemberSearch(e.target.value);
+                      }}
+                      className="w-28 rounded-md"
+                    >
+                      <option value="all">전체</option>
+                      <option value="seogu">서구</option>
+                      <option value="namgu">남구</option>
+                      <option value="yeonsu">연수구</option>
+                      <option value="buphong">부평</option>
+                    </select>
+                  </div>
+                </>
+              ) : (
+                <Input
+                  className="w-48"
+                  placeholder={"검색어"}
+                  onChangeHandler={setMemberSearch}
+                />
+              )}
+              <button
+                className="rounded bg-orange-500 py-2 px-4 font-bold text-white hover:bg-orange-600"
+                onClick={() => {
+                  downloadStudentsBoardingXlsx();
+                }}
+                disabled={downloadStudentsBoardingXlsxLoading}
+              >
+                {downloadStudentsBoardingXlsxLoading ? (
+                  <i className="fas fa-spinner fa-spin mr-2" />
+                ) : (
+                  <>
+                    <i className="fas fa-file-excel mr-2" />
+                    전체 탑승기록 다운로드
+                  </>
+                )}
+              </button>
+            </div>
           </div>
           <div className="mt-2 flex w-full max-w-4xl flex-col items-center justify-between overflow-auto">
             <table className="min-w-full ">
@@ -200,6 +283,9 @@ const Students = () => {
                   </th>
                   <th scope="col" className="mx-auto px-6 py-4 text-left">
                     탑승기록
+                  </th>
+                  <th scope="col" className="mx-auto px-6 py-4 text-left">
+                    삭제
                   </th>
                 </tr>
               </thead>
@@ -242,6 +328,23 @@ const Students = () => {
                             <>
                               <i className="fas fa-file-excel mr-2" />
                               탑승기록 다운로드
+                            </>
+                          )}
+                        </button>
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+                        <button
+                          className="rounded bg-orange-500 py-2 px-4 font-bold text-white hover:bg-orange-600"
+                          onClick={() => {
+                            handleDeleteStudent(student._id);
+                          }}
+                          disabled={deleteStudentLoading}
+                        >
+                          {deleteStudentLoading ? (
+                            <i className="fas fa-spinner fa-spin mr-2" />
+                          ) : (
+                            <>
+                              삭제
                             </>
                           )}
                         </button>

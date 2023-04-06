@@ -46,5 +46,11 @@ export const SideBarItems = [
         name: "학생관리 (승인대기)",
         icon: "fas fa-user-graduate",
         category: "manage"
+    },
+    {
+        path: "/boarding",
+        name: "탑승관리",
+        icon: "fas fa-bus",
+        category: "manage"
     }
 ]
