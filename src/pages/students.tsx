@@ -46,7 +46,11 @@ const Students = () => {
     "/auth/me",
     swrFetcher
   );
-  const { data: studentsData, error: studentsError, mutate: reloadStudent } = useSWR<Student[]>(
+  const {
+    data: studentsData,
+    error: studentsError,
+    mutate: reloadStudent,
+  } = useSWR<Student[]>(
     `/web/students?${
       memberSearch ? `${memberSearchType}=${memberSearch}` : ""
     }`,
@@ -427,7 +431,13 @@ const Students = () => {
           <Input
             defaultValue={editStudnet?.phone}
             onChangeHandler={(e) => {
-              setEditStudnet({ ...editStudnet, phone: e });
+              setEditStudnet({
+                ...editStudnet,
+                phone: e
+                  .replace(/[^0-9]/g, "")
+                  .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3")
+                  .replace(/(\-{1,2})$/g, ""),
+              });
             }}
             placeholder="전화번호"
           />
