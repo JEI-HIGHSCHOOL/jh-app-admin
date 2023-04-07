@@ -128,7 +128,7 @@ const Students = () => {
               </button>
             </div>
           </div>
-          <div className="mt-2 flex w-full max-w-4xl flex-col items-center justify-between overflow-auto">
+          <div className="mt-2 flex w-full flex-col items-center justify-between overflow-auto">
             <table className="min-w-full ">
               <thead className="w-full rounded border-b bg-orange-500">
                 <tr className="font-bold text-white">
